@@ -13,8 +13,9 @@ router.post('/', async function(req, res, next) {
   let auth = await authented(uname, passwd);
   if (auth) {
     // Call a function in the models to return a products_table in HTML string.
-    html_table = products_display();
-    res.render('users', {title: 'User Page', products_table: html_table});
+    html_table = await products_display();
+    res.render('users', {title: 'User Page', 
+      products_table: html_table});
   } else {
     res.render('login', {title: 'Login Page'});
   }

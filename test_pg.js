@@ -4,7 +4,7 @@ const pg_config = require('./models/pg_config');
 async function test() {
     const client = new Client(pg_config);
     await client.connect();
-    const result = await client.query('SELECT * FROM users;');
+    const result = await client.query('SELECT * FROM products;');
     console.log(result);
     await client.end()
 }

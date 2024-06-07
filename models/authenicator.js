@@ -10,7 +10,7 @@ async function authented(user, pass) {
       values: [user, pass],
     }
     const result = await client.query(query);
-    console.log(result);
+    // console.log(result);
     await client.end();
     if (result.rowCount == 1) {
       auth = true;
