@@ -1,24 +1,31 @@
 const {Client} = require('pg');
 const pg_config = require('./pg_config');
 
-async function products_display() {
-    /*
-            <table border='1'> \
-            <tr> \
-                <th>Company</th> <th>Contact</th> <th>Country</th> \
-            </tr> \
-            <tr> \
-                <td>Alfreds </td> \
-                <td>Maria </td> \
-                <td>Germany</td> \
-            </tr> \
-            </table>
-     */
+async function products_display(username) {
     html_table = `<table border='1'> <tr>`;
     // Query to DB and get all data from products table
     const client = new Client(pg_config);
     await client.connect();
-    const query_string = 'SELECt * FROM products';
+    // Check the role and department
+    const info_query = {
+        text: 'SELECT department, role_id FROM users WHERE username=$1',
+        values: [username],
+      }
+    const info = await client.query(info_query);
+    let department = info.rows[0].department;
+    let role_id = info.rows[0].role_id;
+    let query_string = "";
+    if (role_id == 3) {
+        // shop role
+        query_string = {
+            text: 'SELECt * FROM products WHERE shop_name=$1',
+            values: [department],
+        } 
+    } else {
+        // Director or Admin role
+        query_string = 'SELECT * FROM products';
+    }
+    
     const result = await client.query(query_string);
     headers_list = [];
     // Use the loop to generate headers
